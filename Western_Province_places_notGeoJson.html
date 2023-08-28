@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Western Province Tourism Map</title>
+    <link
+      rel="icon"
+      href="https://shmector.com/_ph/9/299437412.png"
+      type="image/x-icon"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <style>
+      .container {
+        text-align: center;
+        padding: 100px 0;
+      }
+
+      .heading {
+        font-size: 36px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .description {
+        font-size: 18px;
+        margin-bottom: 30px;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      .map-link {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: background-color 0.3s;
+        cursor: pointer;
+      }
+
+      .map-link:hover {
+        background-color: #0056b3;
+      }
+
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="heading">Discover Western Province</h1>
+      <p class="description">
+        Welcome to the Western Province of Rwanda, where breathtaking
+        landscapes, cultural treasures, and vibrant communities await. Uncover
+        the hidden gems and diverse attractions that this province has to offer.
+        <br><b>Done by: SGE Year4, Group 4</b><br>
+      </p>
+      <div class="map-link" onclick="scrollToMap()">
+        Explore the Interactive Map
+      </div>
+
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      function scrollToMap() {
+        var mapElement = document.getElementById("map");
+        mapElement.scrollIntoView({ behavior: "smooth" });
+      }
+
+      var map = L.map("map", {
+        center: [-2.0765, 29.325],
+        zoom: 9,
+      });
+      var osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap",
+      });
+      var googleHybrid = L.tileLayer(
+        "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}",
+        {
+          maxZoom: 20,
+          subdomains: ["mt0", "mt1", "mt2", "mt3"],
+        }
+      ).addTo(map);
+      // western province boundaries
+      fetch(
+        "https://raw.githubusercontent.com/jeff-250/Tourism_interactive_map/main/western.geojson"
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          var westernProvince = L.geoJSON(data, {
+            style: {
+              fillColor: "#FFA3A3",
+              color: "#064870",
+              weight: 1,
+              opacity: 1,
+              fillOpacity: 0.1,
+            },
+          }).addTo(map);
+
+          // basemaps
+          var Stadia_AlidadeSmooth = L.tileLayer(
+            "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png",
+            {
+              maxZoom: 20,
+              attribution:
+                '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+            }
+          );
+
+          var Esri_WorldImagery = L.tileLayer(
+            "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            {
+              attribution:
+                "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+            }
+          ).addTo(map);
+
+          var baseMaps = {
+            Hybrid: googleHybrid,
+            "Open Street Map": osm,
+            "Esri World Imagery": Esri_WorldImagery,
+            Stadia: Stadia_AlidadeSmooth,
+          };
+
+          // Places for tourism
+
+          var tourismPlaces = [
+            {
+              name: "Mont Hehu",
+              latitude: -1.51120005,
+              longitude: 29.36279999,
+              link: "https://en.wikipedia.org/wiki/Mount_Hehu",
+            },
+            {
+              name: "Centre Bethanie",
+              latitude: -2.05940395,
+              longitude: 29.33768249,
+              link: "https://www.tripadvisor.com/Hotel_Review-g673815-d13231372-Reviews-Bethany_Hotel-Kibuye_Western_Province.html",
+            },
+            {
+              name: "Stipp hotel",
+              latitude: -1.69741055,
+              longitude: 29.25212799,
+              link: "https://www.tripadvisor.com/Hotel_Review-g293829-d7591172-Reviews-Stipp_Hotels-Kigali_Kigali_Province.html",
+            },
+            {
+              name: "Hotel Horizon",
+              latitude: -2.49712385,
+              longitude: 28.87779059,
+              link: "https://www.tripadvisor.com/Hotel_Review-g311291-d2075018-Reviews-Hotel_Horizon-Bukavu_South_Kivu_Province.html",
+            },
+            {
+              name: "Cormoran Lodge",
+              latitude: -2.05204795,
+              longitude: 29.34334079,
+              link: "https://www.sunsafaris.com/safari/rwanda/lake-kivu/cormoran-lodge.html",
+            },
+            {
+              name: "Gisakura Guesthouse",
+              latitude: -2.44010355,
+              longitude: 29.09251679,
+              link: "https://www.audleytravel.com/rwanda/accommodation/gisakura-guesthouse",
+            },
+            {
+              name: "Hotel de Chutes",
+              latitude: -2.49000435,
+              longitude: 28.89462589,
+              link: "https://www.tripadvisor.com/Hotel_Review-g2053545-d4743905-Reviews-Hotel_des_Chutes-Cyangugu_Western_Province.html",
+            },
+            {
+              name: "Inzu Lodge",
+              latitude: -1.73002785,
+              longitude: 29.26555559,
+              link: "https://inzulodge.com/",
+            },
+            {
+              name: "Cyimbiri basecamp",
+              latitude: -1.82942535,
+              longitude: 29.29069069,
+              link: "https://ioverlander.com/places/70259-cyimbiri-basecamp",
+            },
+            {
+              name: "Amizero lodge",
+              latitude: -2.48868285,
+              longitude: 28.91908859,
+              link: "https://urugaga-apartments-taba.booked.net/",
+            },
+            {
+              name: "Start of the Irebero Trail",
+              latitude: -2.48510105,
+              longitude: 29.19891319,
+              link: "https://www.insidenyungwenationalpark.com/irebero-trail-in-nyungwe-forest/",
+            },
+            {
+              name: "HOTEL MUSANTO GISENYI",
+              latitude: -1.70717785,
+              longitude: 29.26488899,
+              link: "https://www.booking.com/hotel/rw/musanto.html",
+            },
+            {
+              name: "La Bella campsite",
+              latitude: -1.73172825,
+              longitude: 29.26245069,
+              link: "https://www.labellaresort.com/",
+            },
+            {
+              name: "Holiday Hotel",
+              latitude: -2.05503745,
+              longitude: 29.34618739,
+              link: "https://timbu.com/rwanda/hotels/1015041-holiday-hotel",
+            },
+            {
+              name: "Rwiza Village Guest House",
+              latitude: -2.07536325,
+              longitude: 29.32203479,
+              link: "https://www.booking.com/hotel/rw/rwiza-village-kigali2.html",
+            },
+            {
+              name: "Rushel Kivu Lodge",
+              latitude: -1.90642335,
+              longitude: 29.28418569,
+              link: "https://www.trip.com/hotels/rutsiro-hotel-detail-58074917/rushel-kivu-lodge/",
+            },
+            {
+              name: "Emeraude Kivu Resort",
+              latitude: -2.48043295,
+              longitude: 28.89424789,
+              link: "https://emeraudekivuresort.rw/",
+            },
+            {
+              name: "Rubavu Motel",
+              latitude: -2.47788705,
+              longitude: 28.90996159,
+              link: "https://www.safarinow.com/go/rubavu-motel-cyangugu/",
+            },
+            {
+              name: "Planette Motel",
+              latitude: -1.69452055,
+              longitude: 29.30850549,
+              link: "https://www.hotel-board.com/hotels/planette-motel-hotel-gisenyi-rwanda-1587830.htm",
+            },
+            {
+              name: "Ibere rya Bigogwe",
+              latitude: -1.6489456510874692,
+              longitude: 29.394999720396985,
+              link: "https://www.ibereryabigogwe.com/",
+            },
+            {
+              name: "One&Only Nyungwe House",
+              latitude: -2.4460147230020897,
+              longitude: 29.10379525395838,
+              link: "https://journeysbydesign.com/destinations/rwanda/nyungwe-national-park/nyungwe-forest-lodge",
+            },
+            {
+              name: "Canopy Walkway",
+              latitude: -2.3632784258775854,
+              longitude: 189034363904252,
+              link: "https://www.visitrwanda.com/interests/canopy-walkway/",
+            },
+          ];
+
+          var tourismMarkers = [];
+    
+          for (place of tourismPlaces) {
+            var coordinates = [place.latitude, place.longitude];
+            var marker = L.marker(coordinates);
+            marker
+              .bindPopup(
+                `<b>${place.name}</b><br>Welcome to ${place.name}🗺️🌍 <br>For more information visit <a href="${place.link}
+                                        " target="_blank">${place.link}</a>.`
+              ).addTo(map)
+              .openPopup();
+            tourismMarkers.push(marker);
+          }
+          var tourismPlacesLayerGroup = L.layerGroup(tourismMarkers);
+
+          // Roads
+          var roadsLayer;
+
+          fetch(
+            "https://raw.githubusercontent.com/jeff-250/Tourism_interactive_map/main/new.geojson"
+          )
+            .then((response) => response.json())
+            .then((roadData) => {
+              roadsLayer = L.geoJSON(roadData, {
+                style: {
+                  color: "#87B89E",
+                  weight: 2,
+                  opacity: 0.7,
+                },
+              }).addTo(map);
+              var overlayMaps = {
+                "Tourism Places": tourismPlacesLayerGroup,
+                "Western Province": westernProvince,
+                "Roads": roadsLayer,
+              };
+
+              L.control.layers(baseMaps, overlayMaps).addTo(map);
+            });
+          map.fitBounds(westernProvince.getBounds());
+
+          for (var i = 0; i < tourismMarkers.length; i++) {
+            tourismMarkers[i].on("click", function (event) {
+              map.setView(event.target.getLatLng(), 12);
+            });
+          }
+        });
+    </script>
+  </body>
+</html>
